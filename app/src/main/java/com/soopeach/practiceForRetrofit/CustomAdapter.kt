@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.soopeach.practiceForRetrofit.databinding.ItemRecyclerBinding
 
-class CustomAdapter: RecyclerView.Adapter<Holder>() {
+class CustomAdapter(private val listener: OnItemClickListener): RecyclerView.Adapter<Holder>() {
     var userList : Repository? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -19,6 +19,10 @@ class CustomAdapter: RecyclerView.Adapter<Holder>() {
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val user = userList?.get(position)
         holder.setUser(user)
+        holder.binding.root.setOnClickListener {
+            listener?.onClick(position)
+            false
+        }
     }
 
     override fun getItemCount(): Int {
@@ -31,7 +35,7 @@ class Holder(val binding: ItemRecyclerBinding) : RecyclerView.ViewHolder(binding
         user?.let {
             binding.textName.text = user.name
             binding.textId.text = user.node_id
-            binding.texturl.text = user.url
+            binding.texturl.text = user.html_url
             Glide.with(binding.imageAvater).load(user.owner.avatar_url).into(binding.imageAvater)
         }
     }
